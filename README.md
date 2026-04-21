@@ -228,10 +228,23 @@ Recommended next improvements / 后续建议增强：
 
 ---
 
-## Contributing / 参与贡献
+## Project Reference / 项目参考
 
-Contributions are welcome. Feel free to open issues or submit pull requests.
-欢迎贡献代码，也欢迎提交 Issue 或 Pull Request。
+### English
+
+This project is a front-end recreation and adaptation inspired by the following component reference:
+
+- [animated-characters-login-page by erikx on 21st.dev](https://21st.dev/community/components/erikx/animated-characters-login-page)
+
+The implementation in this repository focuses on recreating the visual style, interaction logic, and playful user experience in a standalone HTML, CSS, and JavaScript version for learning, demonstration, and customization purposes.
+
+### 中文
+
+本项目为一个前端复刻与改写版本，灵感与参考来源如下：
+
+- [21st.dev - erikx / animated-characters-login-page](https://21st.dev/community/components/erikx/animated-characters-login-page)
+
+本仓库中的实现主要聚焦于使用原生 HTML、CSS 与 JavaScript 复刻其视觉风格、交互逻辑与趣味化体验，便于学习、展示与二次开发。
 
 ---
 
