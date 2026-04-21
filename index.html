@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animated Characters Login Page</title>
+  <style>
+    :root {
+      --background: #09090b;
+      --foreground: #fafafa;
+      --card: #09090b;
+      --card-foreground: #fafafa;
+      --primary: #7c3aed;
+      --primary-foreground: #ffffff;
+      --secondary: #27272a;
+      --secondary-foreground: #fafafa;
+      --muted: #18181b;
+      --muted-foreground: #a1a1aa;
+      --accent: #18181b;
+      --accent-foreground: #fafafa;
+      --destructive: #7f1d1d;
+      --destructive-foreground: #fef2f2;
+      --border: rgba(255,255,255,0.10);
+      --input: rgba(255,255,255,0.10);
+      --ring: #a78bfa;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      overflow: hidden;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      background: var(--background);
+    }
+
+    .left {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+      color: rgba(255,255,255,0.96);
+      background: linear-gradient(135deg, rgba(124,58,237,.92), rgba(109,40,217,1), rgba(91,33,182,.86));
+      overflow: hidden;
+    }
+
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    .blur-orb-1,
+    .blur-orb-2 {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(64px);
+      pointer-events: none;
+    }
+
+    .blur-orb-1 {
+      top: 18%;
+      right: 18%;
+      width: 260px;
+      height: 260px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .blur-orb-2 {
+      bottom: 12%;
+      left: 16%;
+      width: 380px;
+      height: 380px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .left-top,
+    .left-middle,
+    .left-bottom {
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand,
+    .mobile-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-icon,
+    .mobile-brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-icon {
+      background: rgba(255,255,255,0.10);
+    }
+
+    .mobile-brand-icon {
+      background: rgba(124,58,237,0.12);
+    }
+
+    .sparkles {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .mobile-brand { display: none; margin-bottom: 48px; justify-content: center; }
+    .mobile-brand .sparkles { color: var(--primary); }
+
+    .characters-wrap {
+      height: 500px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .characters {
+      position: relative;
+      width: 550px;
+      height: 400px;
+    }
+
+    .character {
+      position: absolute;
+      bottom: 0;
+      transition: transform 700ms ease-in-out, height 700ms ease-in-out;
+      transform-origin: bottom center;
+    }
+
+    .purple {
+      left: 70px;
+      width: 180px;
+      height: 400px;
+      background: #6C3FF5;
+      border-radius: 10px 10px 0 0;
+      z-index: 1;
+    }
+
+    .black {
+      left: 240px;
+      width: 120px;
+      height: 310px;
+      background: #2D2D2D;
+      border-radius: 8px 8px 0 0;
+      z-index: 2;
+    }
+
+    .orange {
+      left: 0;
+      width: 240px;
+      height: 200px;
+      background: #FF9B6B;
+      border-radius: 120px 120px 0 0;
+      z-index: 3;
+    }
+
+    .yellow {
+      left: 310px;
+      width: 140px;
+      height: 230px;
+      background: #E8D754;
+      border-radius: 70px 70px 0 0;
+      z-index: 4;
+    }
+
+    .eyes {
+      position: absolute;
+      display: flex;
+      transition: left 700ms ease-in-out, top 700ms ease-in-out;
+    }
+
+    .eyes.fast {
+      transition: left 200ms ease-out, top 200ms ease-out;
+    }
+
+    .purple-eyes { gap: 32px; left: 45px; top: 40px; }
+    .black-eyes  { gap: 24px; left: 26px; top: 32px; }
+    .orange-eyes { gap: 32px; left: 82px; top: 90px; }
+    .yellow-eyes { gap: 24px; left: 52px; top: 40px; }
+
+    .eye-ball {
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: height 150ms ease, width 150ms ease;
+    }
+
+    .eye-ball.black-size {
+      width: 16px;
+      height: 16px;
+    }
+
+    .eye-ball.blink {
+      height: 2px !important;
+    }
+
+    .pupil-inner,
+    .pupil-only {
+      width: 7px;
+      height: 7px;
+      background: #2D2D2D;
+      border-radius: 999px;
+      transform: translate(0px, 0px);
+      transition: transform 100ms ease-out;
+    }
+
+    .eye-ball.black-size .pupil-inner {
+      width: 6px;
+      height: 6px;
+    }
+
+    .pupil-only {
+      width: 12px;
+      height: 12px;
+    }
+
+    .yellow-mouth {
+      position: absolute;
+      width: 80px;
+      height: 4px;
+      background: #2D2D2D;
+      border-radius: 999px;
+      left: 40px;
+      top: 88px;
+      transition: left 200ms ease-out, top 200ms ease-out;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.60);
+    }
+
+    .footer-links a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 150ms ease;
+    }
+
+    .footer-links a:hover {
+      color: rgba(255,255,255,0.96);
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background: var(--background);
+    }
+
+    .panel {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .header p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted-foreground);
+    }
+
+    form { display: block; }
+    .space-y-5 > * + * { margin-top: 20px; }
+    .field { display: block; }
+    .field-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .input,
+    .button,
+    .social-button {
+      width: 100%;
+      border-radius: 12px;
+      font-size: 14px;
+      transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease, color 150ms ease, opacity 150ms ease;
+    }
+
+    .input {
+      height: 48px;
+      background: var(--background);
+      color: var(--foreground);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0 14px;
+      outline: none;
+    }
+
+    .input::placeholder { color: #71717a; }
+    .input:focus {
+      border-color: rgba(124,58,237,1);
+      box-shadow: 0 0 0 2px rgba(167,139,250,0.25);
+    }
+
+    .password-wrap { position: relative; }
+    .password-wrap .input { padding-right: 46px; }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-password:hover { color: var(--foreground); }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .checkbox {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .remember label {
+      font-size: 14px;
+      color: var(--foreground);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .forgot,
+    .signup a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .forgot {
+      color: var(--primary);
+    }
+
+    .forgot:hover,
+    .signup a:hover { text-decoration: underline; }
+
+    .error {
+      display: none;
+      padding: 12px;
+      font-size: 14px;
+      color: #fca5a5;
+      background: rgba(69,10,10,0.35);
+      border: 1px solid rgba(127,29,29,0.45);
+      border-radius: 12px;
+    }
+
+    .error.show { display: block; }
+
+    .button,
+    .social-button {
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      font-weight: 500;
+    }
+
+    .button {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      font-size: 16px;
+    }
+
+    .button:hover { background: #6d28d9; }
+    .button:disabled { opacity: .5; cursor: not-allowed; }
+
+    .social-section { margin-top: 24px; }
+
+    .social-button {
+      background: var(--background);
+      color: var(--foreground);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .social-button:hover { background: var(--accent); }
+
+    .signup {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted-foreground);
+      margin-top: 32px;
+    }
+
+    .signup a {
+      color: var(--foreground);
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      flex: 0 0 auto;
+    }
+
+    @media (max-width: 1024px) {
+      body { overflow: auto; }
+      .page { grid-template-columns: 1fr; }
+      .left { display: none; }
+      .mobile-brand { display: inline-flex; }
+      .right { min-height: 100vh; }
+      .panel { max-width: 420px; }
+    }
+
+    @media (max-width: 520px) {
+      .right { padding: 24px; }
+      .header h1 { font-size: 28px; }
+      .row { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="left">
+      <div class="grid-overlay"></div>
+      <div class="blur-orb-1"></div>
+      <div class="blur-orb-2"></div>
+
+      <div class="left-top">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg class="sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063A2 2 0 0 0 14.063 15.5l-1.582 6.135a.5.5 0 0 1-.962 0z"></path>
+              <path d="M20 3v4"></path>
+              <path d="M22 5h-4"></path>
+              <path d="M4 17v2"></path>
+              <path d="M5 18H3"></path>
+            </svg>
+          </div>
+          <span>YourBrand</span>
+        </div>
+      </div>
+
+      <div class="left-middle characters-wrap">
+        <div class="characters" id="charactersScene">
+          <div class="character purple" id="purple">
+            <div class="eyes purple-eyes" id="purpleEyes">
+              <div class="eye-ball" id="purpleEye1"><div class="pupil-inner"></div></div>
+              <div class="eye-ball" id="purpleEye2"><div class="pupil-inner"></div></div>
+            </div>
+          </div>
+
+          <div class="character black" id="black">
+            <div class="eyes black-eyes" id="blackEyes">
+              <div class="eye-ball black-size" id="blackEye1"><div class="pupil-inner"></div></div>
+              <div class="eye-ball black-size" id="blackEye2"><div class="pupil-inner"></div></div>
+            </div>
+          </div>
+
+          <div class="character orange" id="orange">
+            <div class="eyes orange-eyes fast" id="orangeEyes">
+              <div class="pupil-only" id="orangePupil1"></div>
+              <div class="pupil-only" id="orangePupil2"></div>
+            </div>
+          </div>
+
+          <div class="character yellow" id="yellow">
+            <div class="eyes yellow-eyes fast" id="yellowEyes">
+              <div class="pupil-only" id="yellowPupil1"></div>
+              <div class="pupil-only" id="yellowPupil2"></div>
+            </div>
+            <div class="yellow-mouth" id="yellowMouth"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-bottom">
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="panel">
+        <div class="mobile-brand">
+          <div class="mobile-brand-icon">
+            <svg class="sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.937A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063A2 2 0 0 0 14.063 15.5l-1.582 6.135a.5.5 0 0 1-.962 0z"></path>
+              <path d="M20 3v4"></path>
+              <path d="M22 5h-4"></path>
+              <path d="M4 17v2"></path>
+              <path d="M5 18H3"></path>
+            </svg>
+          </div>
+          <span>YourBrand</span>
+        </div>
+
+        <div class="header">
+          <h1>Welcome back!</h1>
+          <p>Please enter your details</p>
+        </div>
+
+        <form id="loginForm" class="space-y-5">
+          <div class="field">
+            <label class="field-label" for="email">Email</label>
+            <input class="input" id="email" type="email" placeholder="anna@gmail.com" autocomplete="off" required />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="password">Password</label>
+            <div class="password-wrap">
+              <input class="input" id="password" type="password" placeholder="••••••••" required />
+              <button class="toggle-password" id="togglePassword" type="button" aria-label="Toggle password visibility">
+                <svg id="eyeOpen" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg id="eyeClosed" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                  <path d="M10.733 5.076A10.744 10.744 0 0 1 12 5c4.136 0 7.715 2.354 9.538 5.804.128.242.192.363.225.53.025.126.025.401 0 .527-.033.167-.097.288-.225.53a11.58 11.58 0 0 1-1.44 2.19"></path>
+                  <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"></path>
+                  <path d="M17.479 17.499A10.75 10.75 0 0 1 12 19c-4.136 0-7.715-2.354-9.538-5.804-.128-.242-.192-.363-.225-.53a1.086 1.086 0 0 1 0-.527c.033-.167.097-.288.225-.53A11.58 11.58 0 0 1 5.5 7.5"></path>
+                  <path d="m2 2 20 20"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="remember">
+              <input class="checkbox" id="remember" type="checkbox" />
+              <label for="remember">Remember for 30 days</label>
+            </div>
+            <a class="forgot" href="#">Forgot password?</a>
+          </div>
+
+          <div class="error" id="errorBox">Invalid email or password. Please try again.</div>
+
+          <button class="button" id="submitBtn" type="submit">Log in</button>
+        </form>
+
+        <div class="social-section">
+          <button class="social-button" type="button">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a2 2 0 0 1-2.06 0L2 7"></path>
+            </svg>
+            <span>Log in with Google</span>
+          </button>
+        </div>
+
+        <div class="signup">
+          Don't have an account?
+          <a href="#">Sign Up</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      mouseX: window.innerWidth / 2,
+      mouseY: window.innerHeight / 2,
+      showPassword: false,
+      isPurpleBlinking: false,
+      isBlackBlinking: false,
+      isTyping: false,
+      isLookingAtEachOther: false,
+      isPurplePeeking: false,
+      peekTimeout: null,
+      lookTimer: null,
+    };
+
+    const el = {
+      email: document.getElementById('email'),
+      password: document.getElementById('password'),
+      form: document.getElementById('loginForm'),
+      errorBox: document.getElementById('errorBox'),
+      submitBtn: document.getElementById('submitBtn'),
+      togglePassword: document.getElementById('togglePassword'),
+      eyeOpen: document.getElementById('eyeOpen'),
+      eyeClosed: document.getElementById('eyeClosed'),
+
+      purple: document.getElementById('purple'),
+      black: document.getElementById('black'),
+      orange: document.getElementById('orange'),
+      yellow: document.getElementById('yellow'),
+      purpleEyes: document.getElementById('purpleEyes'),
+      blackEyes: document.getElementById('blackEyes'),
+      orangeEyes: document.getElementById('orangeEyes'),
+      yellowEyes: document.getElementById('yellowEyes'),
+      yellowMouth: document.getElementById('yellowMouth'),
+
+      purpleEye1: document.getElementById('purpleEye1'),
+      purpleEye2: document.getElementById('purpleEye2'),
+      blackEye1: document.getElementById('blackEye1'),
+      blackEye2: document.getElementById('blackEye2'),
+      orangePupil1: document.getElementById('orangePupil1'),
+      orangePupil2: document.getElementById('orangePupil2'),
+      yellowPupil1: document.getElementById('yellowPupil1'),
+      yellowPupil2: document.getElementById('yellowPupil2'),
+    };
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function getMouseDelta(rect, centerYOffset = 0.5) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height * centerYOffset;
+      return {
+        dx: state.mouseX - centerX,
+        dy: state.mouseY - centerY,
+      };
+    }
+
+    function calculateBodyPosition(element) {
+      const rect = element.getBoundingClientRect();
+      const { dx, dy } = getMouseDelta(rect, 1 / 3);
+      return {
+        faceX: clamp(dx / 20, -15, 15),
+        faceY: clamp(dy / 30, -10, 10),
+        bodySkew: clamp(-dx / 120, -6, 6),
+      };
+    }
+
+    function setPupilTransform(container, targetX, targetY, maxDistance, forcedX, forcedY) {
+      const pupil = container.querySelector('.pupil-inner');
+      if (!pupil) return;
+
+      let x = 0;
+      let y = 0;
+
+      if (forcedX !== undefined && forcedY !== undefined) {
+        x = forcedX;
+        y = forcedY;
+      } else {
+        const rect = container.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = targetX - cx;
+        const dy = targetY - cy;
+        const distance = Math.min(Math.sqrt(dx * dx + dy * dy), maxDistance);
+        const angle = Math.atan2(dy, dx);
+        x = Math.cos(angle) * distance;
+        y = Math.sin(angle) * distance;
+      }
+
+      pupil.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function setStandalonePupilTransform(node, targetX, targetY, maxDistance, forcedX, forcedY) {
+      let x = 0;
+      let y = 0;
+
+      if (forcedX !== undefined && forcedY !== undefined) {
+        x = forcedX;
+        y = forcedY;
+      } else {
+        const rect = node.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = targetX - cx;
+        const dy = targetY - cy;
+        const distance = Math.min(Math.sqrt(dx * dx + dy * dy), maxDistance);
+        const angle = Math.atan2(dy, dx);
+        x = Math.cos(angle) * distance;
+        y = Math.sin(angle) * distance;
+      }
+
+      node.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function updateBlinking() {
+      [el.purpleEye1, el.purpleEye2].forEach(node => {
+        node.classList.toggle('blink', state.isPurpleBlinking);
+      });
+      [el.blackEye1, el.blackEye2].forEach(node => {
+        node.classList.toggle('blink', state.isBlackBlinking);
+      });
+    }
+
+    function scheduleBlinkLoop(setterKey) {
+      function run() {
+        const delay = Math.random() * 4000 + 3000;
+        setTimeout(() => {
+          state[setterKey] = true;
+          updateBlinking();
+          setTimeout(() => {
+            state[setterKey] = false;
+            updateBlinking();
+            run();
+          }, 150);
+        }, delay);
+      }
+      run();
+    }
+
+    function schedulePeek() {
+      clearTimeout(state.peekTimeout);
+      if (!(el.password.value.length > 0 && state.showPassword)) {
+        state.isPurplePeeking = false;
+        renderScene();
+        return;
+      }
+
+      const delay = Math.random() * 3000 + 2000;
+      state.peekTimeout = setTimeout(() => {
+        state.isPurplePeeking = true;
+        renderScene();
+        setTimeout(() => {
+          state.isPurplePeeking = false;
+          renderScene();
+          schedulePeek();
+        }, 800);
+      }, delay);
+    }
+
+    function setTyping(active) {
+      state.isTyping = active;
+      state.isLookingAtEachOther = active;
+      clearTimeout(state.lookTimer);
+      if (active) {
+        state.lookTimer = setTimeout(() => {
+          state.isLookingAtEachOther = false;
+          renderScene();
+        }, 800);
+      } else {
+        state.isLookingAtEachOther = false;
+      }
+      renderScene();
+    }
+
+    function renderScene() {
+      const purplePos = calculateBodyPosition(el.purple);
+      const blackPos = calculateBodyPosition(el.black);
+      const orangePos = calculateBodyPosition(el.orange);
+      const yellowPos = calculateBodyPosition(el.yellow);
+      const passwordHiddenMode = el.password.value.length > 0 && !state.showPassword;
+      const passwordVisibleMode = el.password.value.length > 0 && state.showPassword;
+
+      el.purple.style.height = (state.isTyping || passwordHiddenMode) ? '440px' : '400px';
+      el.purple.style.transform = passwordVisibleMode
+        ? 'skewX(0deg)'
+        : (state.isTyping || passwordHiddenMode)
+          ? `skewX(${(purplePos.bodySkew || 0) - 12}deg) translateX(40px)`
+          : `skewX(${purplePos.bodySkew || 0}deg)`;
+
+      el.black.style.transform = passwordVisibleMode
+        ? 'skewX(0deg)'
+        : state.isLookingAtEachOther
+          ? `skewX(${(blackPos.bodySkew || 0) * 1.5 + 10}deg) translateX(20px)`
+          : (state.isTyping || passwordHiddenMode)
+            ? `skewX(${(blackPos.bodySkew || 0) * 1.5}deg)`
+            : `skewX(${blackPos.bodySkew || 0}deg)`;
+
+      el.orange.style.transform = passwordVisibleMode
+        ? 'skewX(0deg)'
+        : `skewX(${orangePos.bodySkew || 0}deg)`;
+
+      el.yellow.style.transform = passwordVisibleMode
+        ? 'skewX(0deg)'
+        : `skewX(${yellowPos.bodySkew || 0}deg)`;
+
+      el.purpleEyes.style.left = passwordVisibleMode ? '20px' : state.isLookingAtEachOther ? '55px' : `${45 + purplePos.faceX}px`;
+      el.purpleEyes.style.top = passwordVisibleMode ? '35px' : state.isLookingAtEachOther ? '65px' : `${40 + purplePos.faceY}px`;
+
+      el.blackEyes.style.left = passwordVisibleMode ? '10px' : state.isLookingAtEachOther ? '32px' : `${26 + blackPos.faceX}px`;
+      el.blackEyes.style.top = passwordVisibleMode ? '28px' : state.isLookingAtEachOther ? '12px' : `${32 + blackPos.faceY}px`;
+
+      el.orangeEyes.style.left = passwordVisibleMode ? '50px' : `${82 + (orangePos.faceX || 0)}px`;
+      el.orangeEyes.style.top = passwordVisibleMode ? '85px' : `${90 + (orangePos.faceY || 0)}px`;
+
+      el.yellowEyes.style.left = passwordVisibleMode ? '20px' : `${52 + (yellowPos.faceX || 0)}px`;
+      el.yellowEyes.style.top = passwordVisibleMode ? '35px' : `${40 + (yellowPos.faceY || 0)}px`;
+
+      el.yellowMouth.style.left = passwordVisibleMode ? '10px' : `${40 + (yellowPos.faceX || 0)}px`;
+      el.yellowMouth.style.top = passwordVisibleMode ? '88px' : `${88 + (yellowPos.faceY || 0)}px`;
+
+      const purpleForceX = passwordVisibleMode ? (state.isPurplePeeking ? 4 : -4) : state.isLookingAtEachOther ? 3 : undefined;
+      const purpleForceY = passwordVisibleMode ? (state.isPurplePeeking ? 5 : -4) : state.isLookingAtEachOther ? 4 : undefined;
+      const blackForceX = passwordVisibleMode ? -4 : state.isLookingAtEachOther ? 0 : undefined;
+      const blackForceY = passwordVisibleMode ? -4 : state.isLookingAtEachOther ? -4 : undefined;
+      const frontForceX = passwordVisibleMode ? -5 : undefined;
+      const frontForceY = passwordVisibleMode ? -4 : undefined;
+
+      setPupilTransform(el.purpleEye1, state.mouseX, state.mouseY, 5, purpleForceX, purpleForceY);
+      setPupilTransform(el.purpleEye2, state.mouseX, state.mouseY, 5, purpleForceX, purpleForceY);
+      setPupilTransform(el.blackEye1, state.mouseX, state.mouseY, 4, blackForceX, blackForceY);
+      setPupilTransform(el.blackEye2, state.mouseX, state.mouseY, 4, blackForceX, blackForceY);
+      setStandalonePupilTransform(el.orangePupil1, state.mouseX, state.mouseY, 5, frontForceX, frontForceY);
+      setStandalonePupilTransform(el.orangePupil2, state.mouseX, state.mouseY, 5, frontForceX, frontForceY);
+      setStandalonePupilTransform(el.yellowPupil1, state.mouseX, state.mouseY, 5, frontForceX, frontForceY);
+      setStandalonePupilTransform(el.yellowPupil2, state.mouseX, state.mouseY, 5, frontForceX, frontForceY);
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      state.mouseX = e.clientX;
+      state.mouseY = e.clientY;
+      renderScene();
+    });
+
+    el.email.addEventListener('focus', () => setTyping(true));
+    el.email.addEventListener('blur', () => setTyping(false));
+
+    el.password.addEventListener('input', () => {
+      schedulePeek();
+      renderScene();
+    });
+
+    el.togglePassword.addEventListener('click', () => {
+      state.showPassword = !state.showPassword;
+      el.password.type = state.showPassword ? 'text' : 'password';
+      el.eyeOpen.style.display = state.showPassword ? 'none' : 'block';
+      el.eyeClosed.style.display = state.showPassword ? 'block' : 'none';
+      schedulePeek();
+      renderScene();
+    });
+
+    el.form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      el.errorBox.classList.remove('show');
+      el.submitBtn.disabled = true;
+      el.submitBtn.textContent = 'Signing in...';
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const email = el.email.value.trim();
+      const password = el.password.value;
+
+      if (email === 'erik@gmail.com' && password === '1234') {
+        alert('Login successful! Welcome, Erik!');
+      } else {
+        el.errorBox.classList.add('show');
+      }
+
+      el.submitBtn.disabled = false;
+      el.submitBtn.textContent = 'Log in';
+    });
+
+    scheduleBlinkLoop('isPurpleBlinking');
+    scheduleBlinkLoop('isBlackBlinking');
+    renderScene();
+  </script>
+</body>
+</html>
