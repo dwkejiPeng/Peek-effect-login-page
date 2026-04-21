@@ -1,13 +1,20 @@
-# Animated Characters Login Page / 动态角色登录页
+# Peek Effect Login Page / 偷看效果登录页
 
 <p align="center">
-  A polished, interactive login experience built with pure HTML, CSS, and JavaScript.  
+  <img src="https://img.shields.io/badge/HTML5-Structure-E34F26?logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/CSS3-Styling-1572B6?logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/JavaScript-Interaction-F7DF1E?logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" />
+</p>
+
+<p align="center">
+  A polished, interactive login experience built with pure HTML, CSS, and JavaScript.<br/>
   一个使用原生 HTML、CSS 和 JavaScript 构建的高完成度动态登录页。
 </p>
 
 <p align="center">
-  <strong>Interactive · Responsive · Playful · Lightweight</strong><br/>
-  <strong>交互感强 · 响应式 · 富有趣味 · 轻量无依赖</strong>
+  <strong>A playful and polished animated login experience.</strong><br/>
+  <strong>一个兼具趣味性与完成度的动态登录体验。</strong>
 </p>
 
 ---
@@ -245,12 +252,3 @@ See the [`LICENSE`](./LICENSE) file for details.
 **中文**：一个使用 HTML、CSS 和 JavaScript 构建的动态登录页，包含响应式布局、角色鼠标跟随、眨眼动画，以及有趣的密码显隐联动效果。
 
 ---
-
-## Suggested GitHub Badges / 推荐徽章
-
-```md
-![HTML5](https://img.shields.io/badge/HTML5-Structure-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-Styling-1572B6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-Interaction-F7DF1E?logo=javascript&logoColor=black)
-![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
-```
